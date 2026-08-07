@@ -36,6 +36,10 @@ macos_arm64_runners, _macos_x64_runners = macos_runners.partition { |runner| run
 ubuntu_arm64_runners, ubuntu_x64_runners = ubuntu_runners.partition { |runner| runner.include?('arm') }
 windows_arm64_runners, windows_x64_runners = windows_runners.partition { |runner| runner.include?('arm64') }
 
+# Match both upstream-style (`ubuntu-24.04`) and Warp-style (`warp-ubuntu-2404-*`) runner names.
+asan_runners = ubuntu_x64_runners.grep(/ubuntu-?24\.?04/)
+ubuntu2604_runners = ubuntu_runners.grep(/ubuntu-?26\.?04/)
+
 # Versions
 ruby_builder_versions = JSON.load(File.read('ruby-builder-versions.json'))
 windows_versions = JSON.load(File.read('windows-versions.json'))
@@ -51,7 +55,7 @@ matrix += runners.product(jruby_versions)
 
 # truffleruby: latest release + head
 truffleruby_versions = %w[truffleruby truffleruby-head truffleruby+graalvm truffleruby+graalvm-head]
-matrix += non_windows_runners.product(truffleruby_versions)
+matrix += (macos_arm64_runners + ubuntu_runners).product(truffleruby_versions)
 
 # ruby-loco: head
 ruby_loco_versions = %w[mingw mswin ucrt]
@@ -59,7 +63,7 @@ matrix += windows_x64_runners.product(ruby_loco_versions)
 
 # asan: latest release + head
 asan_versions = %w[asan-release asan]
-matrix += ubuntu_x64_runners.sort.last(1).product(asan_versions)
+matrix += asan_runners.sort.last(1).product(asan_versions)
 
 # https://github.com/ruby/setup-ruby/pull/596#discussion_r1606047680
 matrix -= (ubuntu_runners.reject { |r| r.include?('22.04') || r.include?('2204') }).product(%w[1.9])
@@ -69,6 +73,8 @@ matrix -= ubuntu_runners.product(%w[2.2])
 matrix -= macos_arm64_runners.product(%w[1.9 2.0 2.1 2.2 2.3 2.4 2.5])
 # These old Rubies fail to compile or segfault on Linux arm64
 matrix -= ubuntu_arm64_runners.product(%w[1.9 2.0 2.1 2.2])
+# These old Rubies fail to compile on ubuntu-26.04
+matrix -= ubuntu2604_runners.product(%w[1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1])
 # RubyInstaller windows-arm64 builds only exist for Ruby 3.4+
 matrix -= windows_arm64_runners.product(%w[2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1 3.2 3.3])
 
