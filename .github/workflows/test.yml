@@ -138,7 +138,7 @@ jobs:
 
   testDotRubyVersion:
     name: "Test .ruby-version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: echo "ruby-3.4.0" > .ruby-version
@@ -147,7 +147,7 @@ jobs:
 
   testToolVersions:
     name: "Test .tool-versions"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: echo -e "nodejs 16.0.0\nruby   3.4.0" > .tool-versions
@@ -156,7 +156,7 @@ jobs:
 
   testMise:
     name: "Test mise.toml"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: echo -e "[tools]\nnode = '18'\nruby = '3.4.0'" > mise.toml
@@ -165,7 +165,7 @@ jobs:
 
   testNoGemfile:
     name: "Test with no Gemfile"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: rm Gemfile
@@ -176,7 +176,7 @@ jobs:
 
   testNoGemfileWithBundlerCache:
     name: "Test with no Gemfile but with bundler-cache"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - run: rm Gemfile
@@ -188,7 +188,7 @@ jobs:
 
   testLatestRubygemsVersion:
     name: "Test rubygems: latest on ${{ matrix.ruby }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -210,7 +210,7 @@ jobs:
 
   testFixedRubygemsVersionUpgrades:
     name: "Test rubygems: version upgrades RubyGems to that version if the default is older"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
     - uses: ./
@@ -221,7 +221,7 @@ jobs:
 
   testFixedRubygemsVersionNoop:
     name: "Test rubygems: version noops if the default is newer"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
     - uses: ./
@@ -230,9 +230,31 @@ jobs:
         rubygems: 3.2.3
     - run: gem --version | grep -F "3.3.3"
 
+  testFixedRubygemsBetaVersionUpgrades:
+    name: "Test rubygems: beta version upgrades RubyGems to that version if the default is older"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: ./
+      with:
+        ruby-version: '4.0.7'
+        rubygems: 4.1.0.beta2
+    - run: gem --version | grep -F "4.1.0.beta2"
+
+  testFixedRubygemsBetaVersionNoop:
+    name: "Test rubygems: beta version noops if the default is newer"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: ./
+      with:
+        ruby-version: '4.0.7'
+        rubygems: 4.0.0.beta2
+    - run: gem --version | grep -F "4.0.20"
+
   testUseBundlerFromRubyGemsUpdate:
     name: "Test rubygems: version uses the Bundler installed by the rubygems update"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: ./
@@ -255,7 +277,7 @@ jobs:
 
   testMajorBundlerVersion:
     name: "Test with a major Bundler version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
     - uses: ./
@@ -266,7 +288,7 @@ jobs:
 
   testMinorBundlerVersion:
     name: "Test with a minor Bundler version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
     - uses: ./
@@ -277,7 +299,7 @@ jobs:
 
   testExactBundlerVersion:
     name: "Test with an exact Bundler version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v7
     - uses: ./
@@ -301,7 +323,7 @@ jobs:
 
   testBundlerPre:
     name: "Test with a Bundler pre/rc version"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: ./
@@ -324,7 +346,7 @@ jobs:
 
   testDependencyOnBundler1:
     name: "Test gemfile depending on Bundler 1"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/bundler1.gemfile
     steps:
