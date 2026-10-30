@@ -75,6 +75,8 @@ matrix -= macos_arm64_runners.product(%w[1.9 2.0 2.1 2.2 2.3 2.4 2.5])
 matrix -= ubuntu_arm64_runners.product(%w[1.9 2.0 2.1 2.2])
 # These old Rubies fail to compile on ubuntu-26.04
 matrix -= ubuntu2604_runners.product(%w[1.9 2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1])
+# truffleruby-head needs <stdckdint.h>, which the macOS 14 SDK does not have
+matrix -= macos_runners.grep(/macos-14/).product(%w[truffleruby-head truffleruby+graalvm-head])
 # RubyInstaller windows-arm64 builds only exist for Ruby 3.4+
 matrix -= windows_arm64_runners.product(%w[2.0 2.1 2.2 2.3 2.4 2.5 2.6 2.7 3.0 3.1 3.2 3.3])
 
